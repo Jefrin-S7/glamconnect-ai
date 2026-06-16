@@ -1,0 +1,182 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* ===========================================================
+   GlamConnect AI — design tokens
+   Ported from the landing page prototype (GlamConnectLanding.jsx)
+   so the brand palette, glass surfaces, and signature gradient
+   exist as real, reusable classes instead of inline styles.
+   =========================================================== */
+
+:root {
+  /* shadcn semantic tokens — light theme defaults */
+  --background: #FBFAFC;
+  --foreground: #120B1F;
+  --card: #ffffff;
+  --card-foreground: #120B1F;
+  --popover: #ffffff;
+  --popover-foreground: #120B1F;
+  --primary: #6E3AD6;
+  --primary-foreground: #ffffff;
+  --secondary: #F1EDF7;
+  --secondary-foreground: #120B1F;
+  --muted: #F1EDF7;
+  --muted-foreground: #6b6376;
+  --accent: #E8B65A;
+  --accent-foreground: #120B1F;
+  --destructive: #e5484d;
+  --border: rgba(18, 11, 31, 0.1);
+  --input: rgba(18, 11, 31, 0.12);
+  --ring: #9D7BEA;
+  --radius: 0.85rem;
+}
+
+.dark {
+  /* shadcn semantic tokens — dark theme (matches the landing page's native look) */
+  --background: #120B1F;
+  --foreground: #FBFAFC;
+  --card: #1A1228;
+  --card-foreground: #FBFAFC;
+  --popover: #1A1228;
+  --popover-foreground: #FBFAFC;
+  --primary: #9D7BEA;
+  --primary-foreground: #120B1F;
+  --secondary: #241B36;
+  --secondary-foreground: #FBFAFC;
+  --muted: #241B36;
+  --muted-foreground: rgba(251, 250, 252, 0.6);
+  --accent: #E8B65A;
+  --accent-foreground: #120B1F;
+  --destructive: #ff6b6b;
+  --border: rgba(255, 255, 255, 0.12);
+  --input: rgba(255, 255, 255, 0.14);
+  --ring: #9D7BEA;
+}
+
+@theme inline {
+  /* shadcn semantic tokens, wired to real Tailwind utilities
+     (bg-background, text-foreground, bg-primary, etc.) */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* GlamConnect brand tokens — direct ports from the prototype,
+     now real Tailwind classes: bg-ink, text-violet, from-violet-pale, etc. */
+  --color-ink: #120B1F;
+  --color-ink-soft: #241B36;
+  --color-paper: #FBFAFC;
+  --color-paper-dim: #F1EDF7;
+  --color-violet: #6E3AD6;
+  --color-violet-light: #9D7BEA;
+  --color-violet-pale: #C9A6FF;
+  --color-jasmine: #E8B65A;
+  --color-line: rgba(255, 255, 255, 0.12);
+
+  /* Typography — Fraunces (display) / Manrope (body), wired in layout.tsx */
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-manrope);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+/* ===========================================================
+   Component-level classes — glassmorphism, the Match Ring
+   signature gradient, and motion, ported 1:1 from the prototype.
+   =========================================================== */
+@layer components {
+  .glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--color-line);
+  }
+  .glass-light {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(18, 11, 31, 0.06);
+  }
+  .gradient-text {
+    background: linear-gradient(95deg, #C9A6FF, #9D7BEA 40%, #E8B65A 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .match-ring {
+    background: conic-gradient(
+      from 180deg,
+      var(--color-violet-pale),
+      var(--color-violet),
+      var(--color-jasmine),
+      var(--color-violet-pale)
+    );
+  }
+  .aurora-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.35;
+  }
+  .card-hover {
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-6px);
+    border-color: rgba(157, 123, 234, 0.55);
+    box-shadow: 0 20px 50px -20px rgba(110, 58, 214, 0.55);
+  }
+  .chip {
+    border: 1px solid var(--color-line);
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  }
+  .chip:hover {
+    background: rgba(157, 123, 234, 0.16);
+    border-color: rgba(157, 123, 234, 0.6);
+    transform: translateY(-1px);
+  }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+.fade-up { animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@keyframes spinSlow { to { transform: rotate(360deg); } }
+.spin-slow { animation: spinSlow 6s linear infinite; }
+
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.float-y { animation: floatY 5s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up, .spin-slow, .float-y { animation: none !important; }
+  .card-hover, .chip { transition: none !important; }
+}
