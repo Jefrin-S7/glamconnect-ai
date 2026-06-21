@@ -32,5 +32,5 @@ export const config = {
   // (Next.js 16 renames this whole convention to proxy.ts / a `proxy()`
   // export, worth knowing if this project upgrades later.)
   runtime: "nodejs",
-  matcher: ["/dashboard/:path*", "/owner/:path*"],
+  matcher: ["/dashboard/:path*", "/owner/:path*", "/booking/:path*"],
 };

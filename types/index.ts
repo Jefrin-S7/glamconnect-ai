@@ -59,11 +59,16 @@ export type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled";
 
 export interface Booking {
   id: string;
+  /** Human-readable reference shown to the customer, e.g. "GCA-4F9A2C" — generated once at booking time. */
+  reference: string;
   customerId: string;
   salonId: string;
   serviceId: string;
   date: string; // "2026-06-20"
   timeSlot: string; // "14:30"
+  /** Denormalized from the service at booking time — captures what was
+   * actually booked, and lets slot-overlap checks avoid an extra lookup. */
+  durationMinutes: number;
   status: BookingStatus;
   createdAt: string;
 }
