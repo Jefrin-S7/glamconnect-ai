@@ -2,6 +2,8 @@
 // Buildathon Roadmap (services embedded on the salon document, no
 // subcollections, so every read is a single document fetch).
 
+import type { CHENNAI_AREAS, PRICE_TIERS, SERVICE_CATEGORIES } from "@/lib/constants";
+
 export type UserRole = "customer" | "salon_owner" | "admin";
 
 export interface AppUser {
@@ -13,7 +15,7 @@ export interface AppUser {
   createdAt: string; // ISO timestamp
 }
 
-export type ServiceCategory = "hair" | "skin" | "makeup" | "bridal" | "spa";
+export type ServiceCategory = (typeof SERVICE_CATEGORIES)[number];
 
 export interface SalonService {
   id: string;
@@ -35,7 +37,8 @@ export interface ReviewSummary {
   weaknesses: string[];
 }
 
-export type PriceTier = "₹" | "₹₹" | "₹₹₹" | "₹₹₹₹";
+export type PriceTier = (typeof PRICE_TIERS)[number];
+export type ChennaiArea = (typeof CHENNAI_AREAS)[number];
 export type SalonStatus = "pending" | "live" | "rejected" | "needs_info";
 
 export interface Salon {
@@ -87,9 +90,18 @@ export interface MatchScoreResult {
   reasons: string[];
 }
 
+export interface MatchedSalon {
+  id: string;
+  name: string;
+  area: string;
+  /** The specific service name that triggered this match — shown to explain "why this salon". */
+  matchedService: string;
+}
+
 export interface BeautyAssistantResult {
   hairstyles: string[];
   haircareTip: string;
   services: string[];
-  salons: { name: string; area: string }[];
+  /** Always real, currently-listed salons — cross-referenced server-side, never the LLM's own invented names. */
+  salons: MatchedSalon[];
 }

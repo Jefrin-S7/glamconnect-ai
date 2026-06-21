@@ -2,10 +2,8 @@ import { searchSalons } from "@/actions/discovery";
 import { SearchBar } from "@/components/discovery/search-bar";
 import { FilterBar } from "@/components/discovery/filter-bar";
 import { SalonCard } from "@/components/discovery/salon-card";
+import { CHENNAI_AREAS, PRICE_TIERS } from "@/lib/constants";
 import type { PriceTier } from "@/types";
-
-const AREAS = ["Anna Nagar", "Adyar", "Velachery", "T Nagar", "OMR"] as const;
-const PRICE_TIERS: PriceTier[] = ["₹", "₹₹", "₹₹₹", "₹₹₹₹"];
 
 interface DiscoverPageProps {
   searchParams: Promise<{
@@ -39,7 +37,7 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
 
         <div className="mt-8">
           <SearchBar />
-          <FilterBar areas={AREAS} priceTiers={PRICE_TIERS} />
+          <FilterBar areas={CHENNAI_AREAS} priceTiers={PRICE_TIERS} />
         </div>
 
         {results.length === 0 ? (
