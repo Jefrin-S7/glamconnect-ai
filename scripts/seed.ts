@@ -25,7 +25,7 @@
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
 
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 // Imports admin-core.ts directly, not admin.ts — that file's `server-only`
 // guard throws unconditionally outside Next's bundler, which would break
 // this script the moment it's run via tsx. See admin.ts for why.
@@ -305,7 +305,17 @@ const REVIEWS: SeedReview[] = [
 // AI review summary — one Anthropic call per salon, run once here.
 // ---------------------------------------------------------------------
 
-const anthropic = new Anthropic(); // reads ANTHROPIC_API_KEY from env
+// NVIDIA NIM — OpenAI-compatible, free tier. Reads NVIDIA_API_KEY from env.
+// Primary model: meta/llama-3.1-405b-instruct (confirmed live April 2026).
+// Fallback: mistralai/mistral-large-3-675b-instruct-2512.
+const nimClient = new OpenAI({
+  baseURL: "https://integrate.api.nvidia.com/v1",
+  apiKey: process.env.NVIDIA_API_KEY ?? "",
+});
+const NIM_MODELS = [
+  "meta/llama-3.1-405b-instruct",
+  "mistralai/mistral-large-3-675b-instruct-2512",
+] as const;
 
 async function generateReviewSummary(
   salonName: string,
@@ -315,31 +325,44 @@ async function generateReviewSummary(
   if (reviews.length === 0) return null;
 
   const reviewLines = reviews.map((r) => `- (${r.rating}/5) ${r.text}`).join("\n");
-
-  const prompt = [
+  const userPrompt = [
     `Here are ${reviews.length} customer reviews for "${salonName}", a salon in ${area}, Chennai:`,
     reviewLines,
     "",
     "Summarize these into a balanced review summary. Return ONLY valid JSON, no markdown fences, no commentary, in exactly this shape:",
     '{"strengths": ["...", "..."], "weaknesses": ["...", "..."]}',
-    "2-4 short phrases each, grounded only in what these reviews actually say — do not invent details that aren't present above. If the reviews don't clearly support any weaknesses, return an empty weaknesses array rather than inventing one.",
+    "2-4 short phrases each, grounded only in what these reviews actually say. If reviews don't clearly support any weaknesses, return an empty weaknesses array.",
   ].join("\n");
 
-  const message = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
-    max_tokens: 400,
-    messages: [{ role: "user", content: prompt }],
-  });
+  let lastErr: unknown;
+  for (const model of NIM_MODELS) {
+    try {
+      const response = await nimClient.chat.completions.create({
+        model,
+        max_tokens: 400,
+        temperature: 0.3,
+        messages: [
+          {
+            role: "system",
+            content: "You are a review analyst. Return only valid JSON as instructed. No markdown fences.",
+          },
+          { role: "user", content: userPrompt },
+        ],
+      });
 
-  const text = message.content.map((block) => (block.type === "text" ? block.text : "")).join("");
-  const cleaned = text.replace(/```json|```/g, "").trim();
-  const parsed = JSON.parse(cleaned);
+      const text = response.choices[0]?.message?.content ?? "";
+      const cleaned = text.replace(/```json|```/g, "").trim();
+      const parsed = JSON.parse(cleaned);
 
-  if (!Array.isArray(parsed.strengths) || !Array.isArray(parsed.weaknesses)) {
-    throw new Error("Model returned an unexpected shape");
+      if (!Array.isArray(parsed.strengths) || !Array.isArray(parsed.weaknesses)) {
+        throw new Error("Unexpected response shape");
+      }
+      return { strengths: parsed.strengths, weaknesses: parsed.weaknesses };
+    } catch (err) {
+      lastErr = err;
+    }
   }
-
-  return { strengths: parsed.strengths, weaknesses: parsed.weaknesses };
+  throw lastErr;
 }
 
 // ---------------------------------------------------------------------
@@ -347,8 +370,8 @@ async function generateReviewSummary(
 // ---------------------------------------------------------------------
 
 async function main() {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    throw new Error("Missing ANTHROPIC_API_KEY — set it in .env.local before running the seed script.");
+  if (!process.env.NVIDIA_API_KEY) {
+    throw new Error("Missing NVIDIA_API_KEY — set it in .env.local before running the seed script. Get a free key at build.nvidia.com.");
   }
 
   const db = getAdminDb();
