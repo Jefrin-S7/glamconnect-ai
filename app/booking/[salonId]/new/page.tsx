@@ -23,7 +23,7 @@ export default async function NewBookingPage({ params }: NewBookingPageProps) {
   const { date: minDate } = getCurrentDateTimeInIST();
 
   return (
-    <main className="min-h-screen bg-ink">
+    <main id="main-content" tabIndex={-1} className="min-h-screen bg-ink">
       <div className="max-w-3xl mx-auto px-5 sm:px-8 py-12">
         <Link
           href={`/salon/${salon.id}`}

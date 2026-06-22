@@ -3,7 +3,7 @@ import { BeautyAssistant } from "@/components/ai-assistant/beauty-assistant";
 
 export default function AIAssistantPage() {
   return (
-    <main className="min-h-screen bg-ink">
+    <main id="main-content" tabIndex={-1} className="min-h-screen bg-ink">
       <div className="max-w-3xl mx-auto px-5 sm:px-8 py-16">
         <div className="text-center">
           <span className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase text-violet-light">

@@ -4,7 +4,7 @@ import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
 
 export default function SignInPage() {
   return (
-    <main className="min-h-screen bg-ink flex items-center justify-center p-8">
+    <main id="main-content" tabIndex={-1} className="min-h-screen bg-ink flex items-center justify-center p-8">
       <div className="glass rounded-3xl p-10 max-w-sm w-full text-center">
         <span className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase text-violet-light">
           <Sparkles size={14} /> Sign in

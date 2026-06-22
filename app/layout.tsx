@@ -5,10 +5,6 @@ import "./globals.css";
 const fraunces = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
-  // Fraunces is a variable font — `weight: "variable"` is required when
-  // requesting extra axes (here, the optical-size axis) instead of a
-  // fixed weight list, and is what gives the display face its
-  // characterful, slightly soft feel at large headline sizes.
   weight: "variable",
   axes: ["opsz"],
 });
@@ -33,6 +29,15 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${fraunces.variable} ${manrope.variable} antialiased`}>
+        {/* Skip navigation — visible on focus, hidden otherwise.
+            Keyboard and screen-reader users land here first and can
+            bypass the navbar in a single Tab press. */}
+        <a
+          href="#main-content"
+          className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:top-3 focus-visible:left-3 focus-visible:z-[100] focus-visible:bg-violet focus-visible:text-white focus-visible:px-4 focus-visible:py-2 focus-visible:rounded-full focus-visible:text-sm focus-visible:font-semibold focus-visible:shadow-lg"
+        >
+          Skip to main content
+        </a>
         {children}
       </body>
     </html>

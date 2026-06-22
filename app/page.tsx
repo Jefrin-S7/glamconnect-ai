@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-ink flex items-center justify-center p-8">
+    <main id="main-content" tabIndex={-1} className="min-h-screen bg-ink flex items-center justify-center p-8">
       <div className="glass rounded-3xl p-10 max-w-md text-center">
         <span className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase text-violet-light">
           <Sparkles size={14} /> Scaffold check

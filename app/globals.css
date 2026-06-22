@@ -3,13 +3,8 @@
 
 /* ===========================================================
    GlamConnect AI — design tokens
-   Ported from the landing page prototype (GlamConnectLanding.jsx)
-   so the brand palette, glass surfaces, and signature gradient
-   exist as real, reusable classes instead of inline styles.
    =========================================================== */
-
 :root {
-  /* shadcn semantic tokens — light theme defaults */
   --background: #FBFAFC;
   --foreground: #120B1F;
   --card: #ffffff;
@@ -32,7 +27,6 @@
 }
 
 .dark {
-  /* shadcn semantic tokens — dark theme (matches the landing page's native look) */
   --background: #120B1F;
   --foreground: #FBFAFC;
   --card: #1A1228;
@@ -54,8 +48,6 @@
 }
 
 @theme inline {
-  /* shadcn semantic tokens, wired to real Tailwind utilities
-     (bg-background, text-foreground, bg-primary, etc.) */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -78,9 +70,6 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-
-  /* GlamConnect brand tokens — direct ports from the prototype,
-     now real Tailwind classes: bg-ink, text-violet, from-violet-pale, etc. */
   --color-ink: #120B1F;
   --color-ink-soft: #241B36;
   --color-paper: #FBFAFC;
@@ -90,26 +79,31 @@
   --color-violet-pale: #C9A6FF;
   --color-jasmine: #E8B65A;
   --color-line: rgba(255, 255, 255, 0.12);
-
-  /* Typography — Fraunces (display) / Manrope (body), wired in layout.tsx */
   --font-display: var(--font-fraunces);
   --font-sans: var(--font-manrope);
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground font-sans;
-  }
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground font-sans; }
 }
 
 /* ===========================================================
-   Component-level classes — glassmorphism, the Match Ring
-   signature gradient, and motion, ported 1:1 from the prototype.
+   Focus — 3:1 contrast minimum, never removed, always visible.
+   Applies to every interactive element in the app via .focus-ring.
+   The outline-offset keeps it clear of the element's own border.
    =========================================================== */
 @layer components {
+  .focus-ring {
+    @apply rounded-sm;
+  }
+  .focus-ring:focus-visible {
+    outline: 2.5px solid var(--color-violet-light);
+    outline-offset: 3px;
+    border-radius: inherit;
+  }
+
+  /* Glass surfaces */
   .glass {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px);
@@ -121,6 +115,8 @@
     backdrop-filter: blur(16px);
     border: 1px solid rgba(18, 11, 31, 0.06);
   }
+
+  /* Brand */
   .gradient-text {
     background: linear-gradient(95deg, #C9A6FF, #9D7BEA 40%, #E8B65A 100%);
     -webkit-background-clip: text;
@@ -142,6 +138,8 @@
     filter: blur(70px);
     opacity: 0.35;
   }
+
+  /* Cards */
   .card-hover {
     transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   }
@@ -150,6 +148,8 @@
     border-color: rgba(157, 123, 234, 0.55);
     box-shadow: 0 20px 50px -20px rgba(110, 58, 214, 0.55);
   }
+
+  /* Chips / toggle buttons */
   .chip {
     border: 1px solid var(--color-line);
     transition: background 0.2s, border-color 0.2s, transform 0.2s;
@@ -161,9 +161,14 @@
   }
 }
 
+/* ===========================================================
+   Animations — always declared, disabled via media query.
+   Reduced-motion ALSO removes hover transforms on .card-hover
+   and .chip, since those are motion-triggered state changes.
+   =========================================================== */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: none; }
+  to   { opacity: 1; transform: none; }
 }
 .fade-up { animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
 
@@ -172,11 +177,29 @@
 
 @keyframes floatY {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  50%       { transform: translateY(-10px); }
 }
 .float-y { animation: floatY 5s ease-in-out infinite; }
 
+/* A single authoritative block — covers all motion, including hover
+   transitions, so keyboard / switch / vestibular users are never
+   surprised by movement they didn't trigger themselves. */
 @media (prefers-reduced-motion: reduce) {
-  .fade-up, .spin-slow, .float-y { animation: none !important; }
-  .card-hover, .chip { transition: none !important; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .fade-up,
+  .spin-slow,
+  .float-y {
+    animation: none !important;
+  }
+  .card-hover:hover,
+  .chip:hover {
+    transform: none !important;
+  }
 }

@@ -32,30 +32,45 @@ export function FilterBar({ areas, priceTiers }: FilterBarProps) {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-3 mt-4">
-      <label htmlFor="discover-area-filter" className="sr-only">Filter by area</label>
-      <select
-        id="discover-area-filter"
-        value={areaFilter}
-        onChange={(e) => updateParam("areaFilter", e.target.value)}
-        className="bg-white/5 border border-line rounded-full px-4 py-2 text-sm text-paper outline-none focus-ring"
-      >
-        <option value="" className="bg-ink">All areas</option>
-        {areas.map((area) => (
-          <option key={area} value={area} className="bg-ink">{area}</option>
-        ))}
-      </select>
+    <div
+      className="flex flex-wrap items-center gap-3 mt-4"
+      role="group"
+      aria-label="Filter salons"
+    >
+      <div>
+        <label htmlFor="discover-area-filter" className="sr-only">
+          Filter by area
+        </label>
+        <select
+          id="discover-area-filter"
+          value={areaFilter}
+          onChange={(e) => updateParam("areaFilter", e.target.value)}
+          className="bg-ink border border-line rounded-full px-4 py-2 text-sm text-paper outline-none focus-ring cursor-pointer"
+        >
+          <option value="">All areas</option>
+          {areas.map((area) => (
+            <option key={area} value={area}>{area}</option>
+          ))}
+        </select>
+      </div>
 
-      <div className="flex gap-2" role="group" aria-label="Filter by price tier">
+      <div
+        className="flex flex-wrap gap-2"
+        role="group"
+        aria-label="Filter by price tier"
+      >
         {priceTiers.map((tier) => (
           <button
             key={tier}
             type="button"
             onClick={() => toggleTier(tier)}
             aria-pressed={activeTiers.has(tier)}
+            aria-label={`Price tier ${tier}${activeTiers.has(tier) ? ", active" : ""}`}
             className={cn(
-              "chip text-sm px-3.5 py-1.5 rounded-full",
-              activeTiers.has(tier) ? "bg-violet/20 border-violet-light text-paper" : "text-paper/65"
+              "chip text-sm px-3.5 py-1.5 rounded-full focus-ring",
+              activeTiers.has(tier)
+                ? "bg-violet/20 border-violet-light text-paper"
+                : "text-paper/65"
             )}
           >
             {tier}

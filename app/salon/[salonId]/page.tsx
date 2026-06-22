@@ -19,7 +19,7 @@ export default async function SalonProfilePage({ params }: SalonProfilePageProps
   const Icon = (Icons[iconName] as LucideIcon | undefined) ?? Sparkles;
 
   return (
-    <main className="min-h-screen bg-ink">
+    <main id="main-content" tabIndex={-1} className="min-h-screen bg-ink">
       <div
         className="h-56 sm:h-64 flex items-center justify-center relative"
         style={{ background: `linear-gradient(135deg, ${salon.galleryAccent.from}, ${salon.galleryAccent.to})` }}

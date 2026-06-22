@@ -26,7 +26,7 @@ export default async function OwnerPage() {
 
   if (!salon) {
     return (
-      <main className="min-h-screen bg-ink flex items-center justify-center p-8">
+      <main id="main-content" tabIndex={-1} className="min-h-screen bg-ink flex items-center justify-center p-8">
         <div className="glass rounded-2xl p-8 text-center max-w-sm">
           <p className="text-paper/60 text-sm">No salons found in the database.</p>
           <p className="text-paper/40 text-xs mt-2">Run <code>npm run seed</code> first.</p>
@@ -36,7 +36,7 @@ export default async function OwnerPage() {
   }
 
   return (
-    <main className="min-h-screen bg-ink">
+    <main id="main-content" tabIndex={-1} className="min-h-screen bg-ink">
       {/* Topbar */}
       <header className="border-b border-line backdrop-blur-xl bg-ink/80 sticky top-0 z-40">
         <div className="max-w-5xl mx-auto px-5 sm:px-8 h-14 flex items-center justify-between">
@@ -49,7 +49,7 @@ export default async function OwnerPage() {
               ← Back to app
             </Link>
             <form action={signOutAction}>
-              <button className="text-xs text-paper/55 hover:text-paper focus-ring">Sign out</button>
+              <button type="submit" className="text-xs text-paper/55 hover:text-paper focus-ring">Sign out</button>
             </form>
           </div>
         </div>
