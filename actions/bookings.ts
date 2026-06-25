@@ -135,3 +135,14 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
 
   return { bookingId: booking.id, reference };
 }
+
+/** All bookings for a given customer, newest first. */
+export async function getCustomerBookings(customerId: string): Promise<Booking[]> {
+  const db = getAdminDb();
+  const snap = await db
+    .collection("bookings")
+    .where("customerId", "==", customerId)
+    .orderBy("createdAt", "desc")
+    .get();
+  return snap.docs.map((d) => d.data() as Booking);
+}
